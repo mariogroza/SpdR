@@ -15,8 +15,8 @@ public class Timer : MonoBehaviour
     {
         elapsedTime += Time.deltaTime;
         int minutes = Mathf.FloorToInt(elapsedTime / 60);
-        int seconds = Mathf.FloorToInt(elapsedTime % 600);
-        int milliseconds = (int)(Time.timeSinceLevelLoad * 100f) % 100;
-        timerText.text = minutes + "." + seconds + "." + milliseconds;
+        int seconds = Mathf.FloorToInt(elapsedTime % 60);
+        int milliseconds = Mathf.FloorToInt(elapsedTime * 1000f)/10 % 100;
+        timerText.text = minutes + ":" + seconds + ":" + milliseconds;
     }
 }
