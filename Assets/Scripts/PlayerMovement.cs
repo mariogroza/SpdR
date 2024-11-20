@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     {
         ///movement
         rb.AddForce(move * speed * Time.deltaTime);
-        lastVel = rb.velocity.x;
+        lastVel = rb.linearVelocity.x;
     }
 
     private void Update()

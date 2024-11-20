@@ -29,13 +29,13 @@ public class CameraFollow : MonoBehaviour
     void FixedUpdate()
      {
         // zoom speed
-        if (Mathf.Abs(pm.rb.velocity.x) > Mathf.Abs(lastVelocity.x))   
-            zoom += Mathf.Abs(pm.rb.velocity.x)/100;
+        if (Mathf.Abs(pm.rb.linearVelocity.x) > Mathf.Abs(lastVelocity.x))   
+            zoom += Mathf.Abs(pm.rb.linearVelocity.x)/100;
         else
-            if (Mathf.Abs(pm.rb.velocity.x) <= Mathf.Abs(lastVelocity.x))
+            if (Mathf.Abs(pm.rb.linearVelocity.x) <= Mathf.Abs(lastVelocity.x))
                 zoom -= 1;
             
-        lastVelocity = pm.rb.velocity;
+        lastVelocity = pm.rb.linearVelocity;
         zoom = Mathf.Clamp(zoom, minZoom, maxZoom);
 
 

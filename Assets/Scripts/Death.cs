@@ -21,11 +21,16 @@ public class Death : MonoBehaviour
     {
         if (collision.gameObject.tag == "Wall")
         {
-            if (Mathf.Abs(pm.lastVel) > 5)
+            if (Mathf.Abs(pm.lastVel) > 30)
             {
                 StartCoroutine(DeathDelay());
             }
         }
+    }
+    private void FixedUpdate()
+    {
+        if (Mathf.Abs(pm.lastVel)>60)
+            StartCoroutine(DeathDelay());
     }
     //Particle Spawner
     public void SpawnParticles()

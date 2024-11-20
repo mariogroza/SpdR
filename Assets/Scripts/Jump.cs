@@ -27,12 +27,12 @@ public class Jump : MonoBehaviour
 
         if (Input.GetButton("Jump") && isGrounded)
         {
-            rb.velocity = new Vector2 (rb.velocity.x, jumpPower);
+            rb.linearVelocity = new Vector2 (rb.linearVelocity.x, jumpPower);
         }
         //fall multiplier, CURRENTLY NOT USED BUT MAYBE LATER IMPLEMENTATION
-        if (rb.velocity.y < 0)
+        if (rb.linearVelocity.y < 0)
         {
-            rb.velocity -= vecGravity * fallMultiplier * Time.deltaTime; 
+            rb.linearVelocity -= vecGravity * fallMultiplier * Time.deltaTime; 
         }
     }
 }
