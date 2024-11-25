@@ -19,6 +19,7 @@ public class Death : MonoBehaviour
     // Death by velocity
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // Velocity Death
         if (collision.gameObject.tag == "Wall")
         {
             if (Mathf.Abs(pm.lastVel) > 30)
@@ -26,19 +27,26 @@ public class Death : MonoBehaviour
                 StartCoroutine(DeathDelay());
             }
         }
+        // Instant Death
+        if (collision.gameObject.tag == "Death")
+        {
+            StartCoroutine(DeathDelay());
+        }
     }
     private void FixedUpdate()
     {
+        // Only speed Death
         if (Mathf.Abs(pm.lastVel)>60)
             StartCoroutine(DeathDelay());
     }
+
     //Particle Spawner
     public void SpawnParticles()
     {
         death.Play();
     }
     //Death and deathDelay
-    IEnumerator DeathDelay()
+    public IEnumerator DeathDelay()
     {
         //Freezing movement and turning of player rendering
         SpawnParticles();

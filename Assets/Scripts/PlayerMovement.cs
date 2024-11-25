@@ -7,6 +7,8 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement instance;
+
     public float speed = 1000;
     [HideInInspector]public Vector2 move;
     [HideInInspector]public Rigidbody2D rb;
@@ -20,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         lm = GetComponent<LevelManager>();
         GameObject.DontDestroyOnLoad(this.gameObject);
+        Instantiate(this.rb, rb.transform);/// FA SA FIE DOAR UN PLAYER MEREU
     }
     
     
