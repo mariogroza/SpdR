@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,11 +10,12 @@ public class LevelManager : MonoBehaviour
 {
     PlayerMovement pm;
     Death Death;
-    Vector3 levelStartingPosition = new Vector3(-4.22000027f, -0.449999809f, 0);
+    Vector2 levelStartingPosition = new Vector2 (0, 0);
     private void Start()
     {
         pm = GetComponent<PlayerMovement>();
         Death = GetComponent<Death>();
+        levelStartingPosition = pm.rb.position;
     }
 
     private void Update()
@@ -54,7 +56,7 @@ public class LevelManager : MonoBehaviour
 
     IEnumerator FirstScene()
     {
-        SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
         yield return new WaitForSeconds(.1f);
 
         SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);

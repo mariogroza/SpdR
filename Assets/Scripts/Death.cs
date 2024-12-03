@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Death : MonoBehaviour
 {
+    [SerializeField] TextMeshProUGUI deathCounterText;
+    public TutorialTextManager ttm;
     LevelManager lm;
     PlayerMovement pm;
+    public int deathCounter;
     private ParticleSystem death;
     public SpriteRenderer top,bottom,left,right;
 
@@ -14,6 +18,8 @@ public class Death : MonoBehaviour
         death = GetComponent<ParticleSystem>();
         lm = GetComponent<LevelManager>();
         pm = GetComponent<PlayerMovement>();
+        deathCounter = 0;
+        deathCounterText.text = "Deaths:" + deathCounter.ToString();
     }
 
     // Death by velocity
@@ -65,5 +71,9 @@ public class Death : MonoBehaviour
         left.enabled = true;
         right.enabled = true;
         pm.rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        deathCounter += 1;
+        deathCounterText.text = "Deaths:" + deathCounter.ToString();
+        StartCoroutine(ttm.textSwapToMeanJokeAndBackRandom());
     }
 }

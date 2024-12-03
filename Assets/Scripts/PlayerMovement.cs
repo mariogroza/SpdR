@@ -17,12 +17,11 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector]public float lastVel;
     LevelManager lm;
 
-    private void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         lm = GetComponent<LevelManager>();
-        GameObject.DontDestroyOnLoad(this.gameObject);
-        Instantiate(this.rb, rb.transform);/// FA SA FIE DOAR UN PLAYER MEREU
+        GameObject.DontDestroyOnLoad(this.gameObject);/// FA SA FIE DOAR UN PLAYER MEREU
     }
     
     
