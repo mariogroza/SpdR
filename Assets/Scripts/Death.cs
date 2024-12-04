@@ -1,79 +1,100 @@
 using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class Death : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI deathCounterText;
-    public TutorialTextManager ttm;
-    LevelManager lm;
-    PlayerMovement pm;
-    public int deathCounter;
-    private ParticleSystem death;
-    public SpriteRenderer top,bottom,left,right;
+    [Header("References")]
+    [SerializeField] private TextMeshProUGUI deathCounterText;
+    [SerializeField] private TutorialTextManager tutorialTextManager;
+    [SerializeField] private SpriteRenderer topRenderer;
+    [SerializeField] private SpriteRenderer bottomRenderer;
+    [SerializeField] private SpriteRenderer leftRenderer;
+    [SerializeField] private SpriteRenderer rightRenderer;
+
+    private LevelManager levelManager;
+    private PlayerMovement playerMovement;
+    private ParticleSystem deathParticles;
+
+    private int deathCounter = 0;
 
     private void Start()
     {
-        death = GetComponent<ParticleSystem>();
-        lm = GetComponent<LevelManager>();
-        pm = GetComponent<PlayerMovement>();
-        deathCounter = 0;
-        deathCounterText.text = "Deaths:" + deathCounter.ToString();
+        deathParticles = GetComponent<ParticleSystem>();
+        levelManager = GetComponent<LevelManager>();
+        playerMovement = GetComponent<PlayerMovement>();
+
+        UpdateDeathCounterText();
     }
 
-    // Death by velocity
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        // Velocity Death
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.CompareTag("Wall") && Mathf.Abs(playerMovement.lastVelocity) > 45)
         {
-            if (Mathf.Abs(pm.lastVel) > 30)
-            {
-                StartCoroutine(DeathDelay());
-            }
+            StartCoroutine(HandleDeath());
         }
-        // Instant Death
-        if (collision.gameObject.tag == "Death")
+
+        if (collision.gameObject.CompareTag("Death"))
         {
-            StartCoroutine(DeathDelay());
+            StartCoroutine(HandleDeath());
         }
     }
+
     private void FixedUpdate()
     {
-        // Only speed Death
-        if (Mathf.Abs(pm.lastVel)>60)
-            StartCoroutine(DeathDelay());
+        if (Mathf.Abs(playerMovement.lastVelocity) > 90)
+        {
+            StartCoroutine(HandleDeath());
+        }
     }
 
-    //Particle Spawner
-    public void SpawnParticles()
+    private void SpawnParticles()
     {
-        death.Play();
+        deathParticles.Play();
     }
-    //Death and deathDelay
-    public IEnumerator DeathDelay()
+
+    public IEnumerator HandleDeath()
     {
-        //Freezing movement and turning of player rendering
         SpawnParticles();
-        pm.rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        top.enabled = false;
-        bottom.enabled = false;
-        left.enabled = false;
-        right.enabled = false;
 
-        yield return new WaitForSeconds(.5f);
-        
-        //turning them back on
-        lm.Respawn();
-        top.enabled = true;
-        bottom.enabled = true;
-        left.enabled = true;
-        right.enabled = true;
-        pm.rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        FreezePlayer();
 
-        deathCounter += 1;
-        deathCounterText.text = "Deaths:" + deathCounter.ToString();
-        StartCoroutine(ttm.textSwapToMeanJokeAndBackRandom());
+        yield return new WaitForSeconds(0.5f);
+
+        RespawnPlayer();
+        IncrementDeathCounter();
+    }
+
+    private void FreezePlayer()
+    {
+        playerMovement.Rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+        SetPlayerRenderers(false);
+    }
+
+    private void RespawnPlayer()
+    {
+        levelManager.Respawn();
+        playerMovement.Rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        SetPlayerRenderers(true);
+    }
+
+    private void SetPlayerRenderers(bool enabled)
+    {
+        topRenderer.enabled = enabled;
+        bottomRenderer.enabled = enabled;
+        leftRenderer.enabled = enabled;
+        rightRenderer.enabled = enabled;
+    }
+
+    private void IncrementDeathCounter()
+    {
+        deathCounter++;
+        UpdateDeathCounterText();
+        StartCoroutine(tutorialTextManager.textSwapToMeanJokeAndBackRandom());
+    }
+
+    private void UpdateDeathCounterText()
+    {
+        deathCounterText.text = $"Deaths: {deathCounter}";
     }
 }

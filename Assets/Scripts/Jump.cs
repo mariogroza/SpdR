@@ -1,38 +1,51 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Jump : MonoBehaviour
 {
-    Rigidbody2D rb;
-    [SerializeField] int jumpPower;
-    [SerializeField] float fallMultiplier;
+    private Rigidbody2D _rb;
+    [SerializeField] private int jumpPower = 10;
+    [SerializeField] private float fallMultiplier = 2.5f;
 
-    public Transform groundCheck;
-    public LayerMask groundLayer;
-    bool isGrounded;
-    Vector2 vecGravity;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
 
-    void Start()
+    private Vector2 _gravityVector;
+    private bool _isGrounded;
+
+    private void Start()
     {
-        vecGravity = new Vector2(0, -Physics2D.gravity.y);
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
+        _gravityVector = new Vector2(0, -Physics2D.gravity.y);
     }
 
-    
-    void Update()
+    private void Update()
     {
-        //groundcheck
-        isGrounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1.3f, 0.3f), CapsuleDirection2D.Horizontal, 0, groundLayer);
+        CheckGroundedStatus();
 
-        if (Input.GetButton("Jump") && isGrounded)
+        if (Input.GetButton("Jump") && _isGrounded)
         {
-            rb.linearVelocity = new Vector2 (rb.linearVelocity.x, jumpPower);
+            PerformJump();
         }
-        //fall multiplier, CURRENTLY NOT USED BUT MAYBE LATER IMPLEMENTATION
-        if (rb.linearVelocity.y < 0)
+
+        ApplyFallMultiplier();
+    }
+
+    private void CheckGroundedStatus()
+    {
+        _isGrounded = Physics2D.OverlapCapsule(groundCheck.position, new Vector2(1.3f, 0.3f), CapsuleDirection2D.Horizontal, 0, groundLayer);
+    }
+
+    private void PerformJump()
+    {
+        _rb.linearVelocity = new Vector2(_rb.linearVelocityX, jumpPower);
+    }
+
+    private void ApplyFallMultiplier()
+    {
+        if (_rb.linearVelocityY < 0)
         {
-            rb.linearVelocity -= vecGravity * fallMultiplier * Time.deltaTime; 
+            _rb.linearVelocity -= _gravityVector * fallMultiplier * Time.deltaTime;
         }
     }
 }

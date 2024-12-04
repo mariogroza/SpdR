@@ -1,48 +1,59 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-     public PlayerMovement pm;
-     private Vector2 lastVelocity;
-
-     private Vector3 offset = new Vector3(0f, 0f, -10f);
-     private Vector3 velocity = Vector3.zero;
-
-     public float zoomVelocity = 0f;
-     private float zoom;
-     private float minZoom = 8f;
-     private float maxZoom = 12f;
-
+    [Header("Player and Camera")]
+    [SerializeField] private PlayerMovement playerMovement;
     [SerializeField] private Transform target;
     [SerializeField] private Camera cam;
 
+    [Header("Zoom Settings")]
+    [SerializeField] private float minZoom = 8f;
+    [SerializeField] private float maxZoom = 12f;
+    private float zoomVelocity = 0f;
+    private float currentZoom;
+
+    [Header("Camera Movement")]
+    [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -10f);
+    private Vector3 velocity = Vector3.zero;
+
+    private Vector2 lastVelocity;
+
     private void Start()
     {
-        zoom = cam.orthographicSize;
-        GameObject.DontDestroyOnLoad(this.gameObject);
+        currentZoom = cam.orthographicSize;
+        DontDestroyOnLoad(gameObject);
     }
 
+    private void FixedUpdate()
+    {
+        UpdateZoom();
+        FollowTarget();
+    }
 
-    void FixedUpdate()
-     {
-        // zoom speed
-        if (Mathf.Abs(pm.rb.linearVelocity.x) > Mathf.Abs(lastVelocity.x))   
-            zoom += Mathf.Abs(pm.rb.linearVelocity.x)/100;
-        else
-            if (Mathf.Abs(pm.rb.linearVelocity.x) <= Mathf.Abs(lastVelocity.x))
-                zoom -= 1;
-            
-        lastVelocity = pm.rb.linearVelocity;
-        zoom = Mathf.Clamp(zoom, minZoom, maxZoom);
+    private void UpdateZoom()
+    {
+        float playerSpeed = Mathf.Abs(playerMovement.Rigidbody.linearVelocity.x);
 
+        if (playerSpeed > Mathf.Abs(lastVelocity.x))
+        {
+            currentZoom += playerSpeed / 100f;
+        }
+        else if (playerSpeed <= Mathf.Abs(lastVelocity.x))
+        {
+            currentZoom -= 1f;
+        }
 
+        lastVelocity = playerMovement.Rigidbody.linearVelocity;
+        currentZoom = Mathf.Clamp(currentZoom, minZoom, maxZoom);
+        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, currentZoom, ref zoomVelocity, 0.25f);
+    }
+
+    private void FollowTarget()
+    {
         Vector3 targetPosition = target.position + offset;
-        //camera follow
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, 0f);
-        //zoom
-        cam.orthographicSize = Mathf.SmoothDamp(cam.orthographicSize, zoom, ref zoomVelocity, 0.25f);
     }
 }

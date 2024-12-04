@@ -1,70 +1,92 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    PlayerMovement pm;
-    Death Death;
-    Vector2 levelStartingPosition = new Vector2 (0, 0);
+    private PlayerMovement _playerMovement;
+    private TutorialTextManager _tutorialTextManager;
+    private Death _deathHandler;
+
+    private int _currentStep = 0;
+    private Vector2 _levelStartingPosition;
+
+    [SerializeField]
+    private string[] tutorialMessages =
+    {
+        "Hello! This is your helper SPDR. Use A and D to touch this totally not suspicious green rectangle!",
+        "This one too!!",
+        "Wow, you are a natural! You can also use SPACE to jump!",
+        "Amazing job!! Combine these simple mechanics to get up to the green rectangle!",
+        "That's impressive! Now head right to continue!",
+        "Hold SPACE to climb the GREEN walls."
+    };
+
     private void Start()
     {
-        pm = GetComponent<PlayerMovement>();
-        Death = GetComponent<Death>();
-        levelStartingPosition = pm.rb.position;
+        _playerMovement = GetComponent<PlayerMovement>();
+        _deathHandler = GetComponent<Death>();
+        _tutorialTextManager = GetComponentInChildren<TutorialTextManager>();
+
+        _tutorialTextManager.helperText.text = tutorialMessages[_currentStep];
+        _levelStartingPosition = _playerMovement.Rigidbody.position;
     }
 
     private void Update()
     {
-        //Reset Scene
-
         if (Input.GetKeyDown(KeyCode.R))
-           StartCoroutine(Death.DeathDelay());
-
-        //Reset Run
-        if (Input.GetKeyDown(KeyCode.T))
-            StartCoroutine(FirstScene());
-    }
-
-    //Load next scene on colision with end of level
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        
-        if (collision.tag == "Finish")
         {
-            levelStartingPosition = pm.rb.position;
-            StartCoroutine(NextScene());
+            StartCoroutine(_deathHandler.HandleDeath());
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            StartCoroutine(ReloadFirstScene());
         }
     }
-    //NOT YET USED
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Finish"))
+        {
+            LoadNextScene();
+        }
+    }
+
     public void LoadMenuScene()
     {
         SceneManager.LoadScene("MenuScene");
     }
 
-    IEnumerator NextScene()
-    {
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1, LoadSceneMode.Additive);
-        yield return new WaitForSeconds(.1f);
-        
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    IEnumerator FirstScene()
-    {
-        SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-        yield return new WaitForSeconds(.1f);
-
-        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    //goes back to the start of the level on death
     public void Respawn()
     {
-        pm.rb.position = levelStartingPosition;
+        _playerMovement.Rigidbody.position = _levelStartingPosition;
+    }
+
+    private void LoadNextScene()
+    {
+        _levelStartingPosition = _playerMovement.Rigidbody.position;
+
+        if (_currentStep < tutorialMessages.Length)
+        {
+            _currentStep++;
+            _tutorialTextManager.helperText.text = tutorialMessages[_currentStep];
+        }
+
+        StartCoroutine(NextScene());
+    }
+
+    private IEnumerator NextScene()
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1, LoadSceneMode.Additive);
+        yield return new WaitForSeconds(0.1f);
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    private IEnumerator ReloadFirstScene()
+    {
+        SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive);
+        yield return new WaitForSeconds(0.1f);
+        SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
     }
 }

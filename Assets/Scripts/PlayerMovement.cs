@@ -1,38 +1,53 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public static PlayerMovement instance;
+    public static PlayerMovement Instance;
 
-    public float speed = 1000;
-    [HideInInspector]public Vector2 move;
-    [HideInInspector]public Rigidbody2D rb;
-    [HideInInspector]public SpriteRenderer courtain;
+    [SerializeField] private float speed = 1000;
 
-    [HideInInspector]public float lastVel;
-    LevelManager lm;
+    [HideInInspector] public Vector2 move;
+    [HideInInspector] public Rigidbody2D Rigidbody { get; private set; }
+    [HideInInspector] public SpriteRenderer Curtain { get; private set; }
+
+    [HideInInspector] public float lastVelocity;
+
+    private LevelManager _levelManager;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        lm = GetComponent<LevelManager>();
-        GameObject.DontDestroyOnLoad(this.gameObject);/// FA SA FIE DOAR UN PLAYER MEREU
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Rigidbody = GetComponent<Rigidbody2D>();
+        _levelManager = GetComponent<LevelManager>();
     }
-    
-    
+
     private void FixedUpdate()
     {
-        ///movement
-        rb.AddForce(move * speed * Time.deltaTime);
-        lastVel = rb.linearVelocity.x;
+        MovePlayer();
     }
 
     private void Update()
+    {
+        CaptureInput();
+    }
+
+    private void MovePlayer()
+    {
+        Rigidbody.AddForce(move * speed * Time.deltaTime);
+        lastVelocity = Rigidbody.linearVelocity.x;
+    }
+
+    private void CaptureInput()
     {
         move = new Vector2(Input.GetAxisRaw("Horizontal"), 0);
     }
