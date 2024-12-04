@@ -90,7 +90,7 @@ public class Death : MonoBehaviour
     {
         deathCounter++;
         UpdateDeathCounterText();
-        StartCoroutine(tutorialTextManager.textSwapToMeanJokeAndBackRandom());
+        StartCoroutine(tutorialTextManager.SwapToMeanJokeAndBackRandom());
     }
 
     private void UpdateDeathCounterText()

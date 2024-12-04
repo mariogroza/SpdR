@@ -1,22 +1,27 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting;
+
 public class Timer : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI timerText;
-    
-    public PlayerMovement pm;
-    float elapsedTime;
+    [SerializeField] private TextMeshProUGUI timerText;
+    public PlayerMovement playerMovement;
 
-    void Update()
+    private float elapsedTime;
+
+    private void Update()
     {
-        //timer calculator
+        UpdateTimer();
+    }
+
+    private void UpdateTimer()
+    {
         elapsedTime += Time.deltaTime;
+
         int minutes = Mathf.FloorToInt(elapsedTime / 60);
         int seconds = Mathf.FloorToInt(elapsedTime % 60);
-        int milliseconds = Mathf.FloorToInt(elapsedTime * 1000f)/10 % 100;
-        timerText.text = minutes + ":" + seconds + ":" + milliseconds;
+        int milliseconds = Mathf.FloorToInt(elapsedTime * 1000f) / 10 % 100;
+
+        timerText.text = $"{minutes:00}:{seconds:00}:{milliseconds:00}";
     }
 }
