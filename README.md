@@ -13,6 +13,12 @@ UPDATES:
 
 https://github.com/user-attachments/assets/d1450d19-a978-42e5-8b0f-8fcebbe2030a
 
+UPDATES:
+-Small tutorial
+-Taunting messages when you die
+-Remove velocity for now
+
+https://github.com/user-attachments/assets/bc015a42-e1d1-4381-a188-8c213c965c06
 
 
 
