@@ -4,39 +4,23 @@ using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    private PlayerMovement _playerMovement;
-    private TutorialTextManager _tutorialTextManager;
-    private Death _deathHandler;
+    private PlayerMovement playerMovement;
+    private Death deathHandler;
 
-    private int _currentStep = 0;
-    private Vector2 _levelStartingPosition;
-
-    [SerializeField]
-    private string[] tutorialMessages =
-    {
-        "Hello! This is your helper SPDR. Use A and D to touch this totally not suspicious green rectangle!",
-        "This one too!!",
-        "Wow, you are a natural! You can also use SPACE to jump!",
-        "Amazing job!! Combine these simple mechanics to get up to the green rectangle!",
-        "That's impressive! Now head right to continue!",
-        "Hold SPACE to climb the GREEN walls."
-    };
-
+    private int currentStep;
+    private Vector2 levelStartingPosition;
     private void Start()
     {
-        _playerMovement = GetComponent<PlayerMovement>();
-        _deathHandler = GetComponent<Death>();
-        _tutorialTextManager = GetComponentInChildren<TutorialTextManager>();
-
-        _tutorialTextManager.helperText.text = tutorialMessages[_currentStep];
-        _levelStartingPosition = _playerMovement.Rigidbody.position;
+        playerMovement = GetComponent<PlayerMovement>();
+        deathHandler = GetComponent<Death>();
+        levelStartingPosition = playerMovement.Rigidbody.position;
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(_deathHandler.HandleDeath());
+            StartCoroutine(deathHandler.HandleDeath());
         }
 
         if (Input.GetKeyDown(KeyCode.T))
@@ -60,18 +44,12 @@ public class LevelManager : MonoBehaviour
 
     public void Respawn()
     {
-        _playerMovement.Rigidbody.position = _levelStartingPosition;
+        playerMovement.Rigidbody.position = levelStartingPosition;
     }
 
     private void LoadNextScene()
     {
-        _levelStartingPosition = _playerMovement.Rigidbody.position;
-
-        if (_currentStep < tutorialMessages.Length)
-        {
-            _currentStep++;
-            _tutorialTextManager.helperText.text = tutorialMessages[_currentStep];
-        }
+        levelStartingPosition = playerMovement.Rigidbody.position;
 
         StartCoroutine(NextScene());
     }

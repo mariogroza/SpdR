@@ -6,7 +6,6 @@ public class Death : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TextMeshProUGUI deathCounterText;
-    [SerializeField] private TutorialTextManager tutorialTextManager;
     [SerializeField] private SpriteRenderer topRenderer;
     [SerializeField] private SpriteRenderer bottomRenderer;
     [SerializeField] private SpriteRenderer leftRenderer;
@@ -90,7 +89,6 @@ public class Death : MonoBehaviour
     {
         deathCounter++;
         UpdateDeathCounterText();
-        StartCoroutine(tutorialTextManager.SwapToMeanJokeAndBackRandom());
     }
 
     private void UpdateDeathCounterText()

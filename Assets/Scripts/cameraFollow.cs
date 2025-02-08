@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
@@ -12,7 +10,7 @@ public class CameraFollow : MonoBehaviour
     [Header("Zoom Settings")]
     [SerializeField] private float minZoom = 8f;
     [SerializeField] private float maxZoom = 12f;
-    private float zoomVelocity = 0f;
+    private float zoomVelocity;
     private float currentZoom;
 
     [Header("Camera Movement")]
