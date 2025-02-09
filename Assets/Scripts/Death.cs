@@ -28,7 +28,7 @@ public class Death : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall") && Mathf.Abs(playerMovement.lastVelocity) > 45)
+        if (collision.gameObject.CompareTag("Wall") && playerMovement.lastVelocity > 45)
         {
             StartCoroutine(HandleDeath());
         }
@@ -38,15 +38,7 @@ public class Death : MonoBehaviour
             StartCoroutine(HandleDeath());
         }
     }
-
-    private void FixedUpdate()
-    {
-        if (Mathf.Abs(playerMovement.lastVelocity) > 90)
-        {
-            StartCoroutine(HandleDeath());
-        }
-    }
-
+    
     private void SpawnParticles()
     {
         deathParticles.Play();

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public MaxSpeed maxSpeedText;
     public static PlayerMovement Instance;
 
     [SerializeField] private float speed = 1000;
@@ -34,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
+        Text();
     }
 
     private void Update()
@@ -44,7 +46,20 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         Rigidbody.AddForce(move * speed * Time.deltaTime);
-        lastVelocity = Rigidbody.linearVelocity.x;
+        Rigidbody.linearVelocity = Vector3.ClampMagnitude(Rigidbody.linearVelocity, 90);
+        lastVelocity = Mathf.Abs(Rigidbody.linearVelocity.x);
+    }
+
+    private void Text()
+    {
+        if (lastVelocity >= 89f)
+        {
+            maxSpeedText.ShowSpeedText();
+        }
+        else
+        {
+            maxSpeedText.HideSpeedText();
+        }
     }
 
     private void CaptureInput()
