@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public MaxSpeed maxSpeedText;
     public static PlayerMovement Instance;
 
     [SerializeField] private float speed = 1000;
@@ -11,7 +10,8 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public Rigidbody2D Rigidbody { get; private set; }
     [HideInInspector] public SpriteRenderer Curtain { get; private set; }
 
-    [HideInInspector] public float lastVelocity;
+    [HideInInspector] public float lastVelocityX;
+    [HideInInspector] public float lastVelocityY;
 
     private LevelManager _levelManager;
 
@@ -19,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Instance == null)
         {
+            
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
@@ -35,7 +36,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
-        Text();
     }
 
     private void Update()
@@ -47,19 +47,8 @@ public class PlayerMovement : MonoBehaviour
     {
         Rigidbody.AddForce(move * speed * Time.deltaTime);
         Rigidbody.linearVelocity = Vector3.ClampMagnitude(Rigidbody.linearVelocity, 90);
-        lastVelocity = Mathf.Abs(Rigidbody.linearVelocity.x);
-    }
-
-    private void Text()
-    {
-        if (lastVelocity >= 89f)
-        {
-            maxSpeedText.ShowSpeedText();
-        }
-        else
-        {
-            maxSpeedText.HideSpeedText();
-        }
+        lastVelocityX = Mathf.Abs(Rigidbody.linearVelocity.x);
+        lastVelocityY = Mathf.Abs(Rigidbody.linearVelocity.y);
     }
 
     private void CaptureInput()

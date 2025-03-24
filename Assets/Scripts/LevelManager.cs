@@ -8,7 +8,7 @@ public class LevelManager : MonoBehaviour
     private Death deathHandler;
 
     private int currentStep;
-    private Vector2 levelStartingPosition;
+    [HideInInspector]public Vector2 levelStartingPosition;
     private void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
@@ -21,11 +21,6 @@ public class LevelManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             StartCoroutine(deathHandler.HandleDeath());
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            StartCoroutine(ReloadFirstScene());
         }
     }
 

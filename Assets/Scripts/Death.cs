@@ -28,12 +28,12 @@ public class Death : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall") && playerMovement.lastVelocity > 45)
+        if (collision.gameObject.tag == "Wall" && (playerMovement.lastVelocityY > 45 || playerMovement.lastVelocityX > 45))
         {
             StartCoroutine(HandleDeath());
         }
 
-        if (collision.gameObject.CompareTag("Death"))
+        if (collision.gameObject.tag == "Death")
         {
             StartCoroutine(HandleDeath());
         }
@@ -85,6 +85,6 @@ public class Death : MonoBehaviour
 
     private void UpdateDeathCounterText()
     {
-        deathCounterText.text = $"Deaths: {deathCounter}";
+        deathCounterText.text = $"Deaths:{deathCounter}";
     }
 }
